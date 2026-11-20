@@ -54,7 +54,7 @@
     center:false,
     hash:true,
     controls:false, progress:false, slideNumber:false,   /* eigene Seitenzahl auf jeder Folie */
-    transition:"slide", backgroundTransition:"none",
+    transition:"none", backgroundTransition:"none",      /* harter Folienwechsel wie in PowerPoint */
     pdfSeparateFragments:false,                          /* PDF: Folie im Endzustand */
     plugins:[RevealNotes]
   });
