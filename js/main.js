@@ -25,46 +25,37 @@
     d.className="pg"; d.textContent=(i+1)+" / "+order.length; el.appendChild(d);
   });
 
-  /* ---- Route im Overview ---- */
-  var NS="http://www.w3.org/2000/svg", route=document.getElementById("route"), pts=[];
-  order.slice(0,12).forEach(function(id){var e=document.getElementById(id);
-    pts.push([+e.getAttribute("data-x"),+e.getAttribute("data-y")]);});
-  var pl=document.createElementNS(NS,"polyline");
-  pl.setAttribute("points",pts.map(function(p){return p.join(",");}).join(" "));
-  pl.setAttribute("fill","none");pl.setAttribute("stroke","#1B2A41");pl.setAttribute("stroke-width","22");
-  pl.setAttribute("stroke-dasharray","70 50");pl.setAttribute("opacity",".45");route.appendChild(pl);
-  pts.forEach(function(p,i){
-    var c=document.createElementNS(NS,"circle");c.setAttribute("cx",p[0]);c.setAttribute("cy",p[1]);c.setAttribute("r",170);
-    c.setAttribute("fill","#1B2A41");c.setAttribute("opacity",".9");route.appendChild(c);
-    var t=document.createElementNS(NS,"text");t.setAttribute("x",p[0]);t.setAttribute("y",p[1]+75);
-    t.setAttribute("text-anchor","middle");t.setAttribute("fill","#fff");
-    t.setAttribute("style","font:800 210px system-ui,sans-serif");t.textContent=i+1;route.appendChild(t);
-  });
-
-  /* ---- Hochzählen ---- */
+  /* ---- Hochzählen (Zahlen in .cnt laufen beim Erscheinen von 0 hoch) ---- */
   function run(el){
     var to=+el.getAttribute("data-to"), t0=null;
     function f(ts){ if(t0===null)t0=ts; var k=Math.min(1,(ts-t0)/1400); k=1-Math.pow(1-k,3);
       el.textContent=Math.round(to*k); if(k<1)requestAnimationFrame(f);}
     el.textContent="0"; requestAnimationFrame(f);
   }
-  function visibleCnt(root){
-    root.querySelectorAll(".cnt").forEach(function(c){
-      var s=c.closest(".substep"); if(!s||s.classList.contains("substep-visible"))run(c);});
+  function countSlide(slide){
+    if(!slide) return;
+    slide.querySelectorAll(".cnt").forEach(function(c){
+      var fr=c.closest(".fragment"); if(!fr||fr.classList.contains("visible"))run(c);});
   }
-  document.addEventListener("impress:stepenter",function(e){visibleCnt(e.target);});
-  new MutationObserver(function(ms){ms.forEach(function(m){
-    var t=m.target; if(t.classList.contains("substep-visible")&&!(m.oldValue||"").includes("substep-visible")){
-      t.querySelectorAll(".cnt").forEach(run);}});
-  }).observe(document.getElementById("impress"),{attributes:true,attributeFilter:["class"],subtree:true,attributeOldValue:true});
-
-  /* ---- Vollbild mit F ---- */
-  document.addEventListener("keydown",function(e){
-    if(e.key==="f"||e.key==="F"){
-      if(!document.fullscreenElement)document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();
-      else document.exitFullscreen();
-    }
+  /* reveal.js-Events blubbern bis zum document */
+  document.addEventListener("ready",function(e){countSlide(e.currentSlide);});
+  document.addEventListener("slidechanged",function(e){countSlide(e.currentSlide);});
+  document.addEventListener("fragmentshown",function(e){
+    (e.fragments||[e.fragment]).forEach(function(f){f.querySelectorAll(".cnt").forEach(run);});
   });
 
-  if(window.impress){ impress().init(); }
+  /* ---- reveal.js starten ---- */
+  Reveal.initialize({
+    width:1920, height:1080,
+    /* Rand ums Folienblatt: 6 % gesamt, also ca. 3 % je Seite. Im PDF (?print-pdf) ohne Rand,
+       sonst würde reveal.js die Seite um diesen Rand vergrößern. */
+    margin:/print-pdf/.test(location.search) ? 0 : 0.06,
+    minScale:0.05, maxScale:3,
+    center:false,
+    hash:true,
+    controls:false, progress:false, slideNumber:false,   /* eigene Seitenzahl auf jeder Folie */
+    transition:"none", backgroundTransition:"none",      /* harter Folienwechsel wie in PowerPoint */
+    pdfSeparateFragments:false,                          /* PDF: Folie im Endzustand */
+    plugins:[RevealNotes]
+  });
 })();

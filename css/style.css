@@ -13,55 +13,42 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{font-family:var(--font);color:var(--navy);background:var(--bg);overflow:hidden;
+body,.reveal-viewport{font-family:var(--font);color:var(--navy);background-color:var(--bg);overflow:hidden;
   background-image:radial-gradient(circle at 1px 1px, rgba(27,42,65,.10) 1.5px, transparent 0);background-size:56px 56px}
 
-/* ---------- Step-Rahmen ---------- */
-.step{width:1920px;height:1080px;background:var(--paper);border-radius:28px;
-  box-shadow:0 30px 90px rgba(27,42,65,.18);overflow:hidden;font-size:40px;line-height:1.25;
-  transition:opacity 1s ease}
-.impress-enabled .step{position:absolute;opacity:.12;transform-origin:center}
-.impress-enabled .step.active{opacity:1}
-.impress-on-overview .step{opacity:1 !important}
-.impress-on-overview #overview{opacity:0 !important}
-#overview{background:none;box-shadow:none;pointer-events:none}
+/* ---------- Folienrahmen (reveal.js skaliert 1920×1080 ins Fenster, Rand über "margin" in js/main.js) ---------- */
+.reveal .slides{text-align:left}
+.reveal .slides section{width:1920px;height:1080px;padding:0;background:var(--paper);border-radius:28px;
+  box-shadow:0 30px 90px rgba(27,42,65,.18);overflow:hidden;font-size:40px;line-height:1.25;color:var(--navy)}
 
 .eyebrow{position:absolute;left:96px;top:40px;font-size:20px;font-weight:700;letter-spacing:.2em;color:var(--gray);text-transform:uppercase}
 h1{position:absolute;left:96px;top:72px;margin:0;width:1728px;height:56px;font-size:42px;line-height:56px;
   font-weight:800;letter-spacing:.01em;text-transform:uppercase;white-space:nowrap;color:var(--navy)}
 h1::after{content:"";position:absolute;left:0;top:70px;width:96px;height:6px;border-radius:3px;background:var(--navy);
   transform-origin:left;transform:scaleX(0);transition:transform .8s .3s ease}
-.step.present h1::after{transform:scaleX(1)}
+.reveal section.present h1::after{transform:scaleX(1)}
 .src{position:absolute;left:96px;bottom:36px;font-size:22px;color:var(--gray)}
 .pg{position:absolute;right:96px;bottom:36px;font-size:22px;color:var(--gray);font-variant-numeric:tabular-nums}
 .org{color:var(--orange)}
 .gr{color:var(--gray)}
 b,strong{font-weight:800}
 
-/* ---------- Substeps ---------- */
-.substep{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s ease}
-.substep.substep-visible, .impress-on-overview .substep, .impress-not-supported .substep{opacity:1;transform:none}
+/* ---------- Klick-Schritte (reveal.js-Fragments) ---------- */
+.reveal .fragment{transition:opacity .7s ease,transform .7s ease,visibility .7s}
+.reveal .fragment.fade-up{transform:translateY(22px)}
+.reveal .fragment.fade-up.visible{transform:none}
+/* Übersicht (Esc): alle Klick-Schritte zeigen */
+.reveal.overview .fragment{opacity:1;visibility:visible;transform:none}
 
 /* ---------- Balken / Wachstum ---------- */
 .bar{width:0;transition:width 1.3s cubic-bezier(.2,.7,.2,1)}
-.substep-visible .bar, .step.present .bar.now, .impress-on-overview .bar{width:var(--w)}
+.fragment.visible .bar, .reveal section.present .bar.now, .reveal.overview .bar{width:var(--w)}
 .pillar{height:0;transition:height 1.6s cubic-bezier(.2,.7,.2,1)}
-.substep-visible .pillar, .impress-on-overview .pillar{height:var(--h)}
+.fragment.visible .pillar, .reveal.overview .pillar{height:var(--h)}
 .grow{transform-origin:left;transform:scaleX(0);transition:transform 1.3s cubic-bezier(.2,.7,.2,1)}
-.substep-visible .grow, .step.present .grow.now, .impress-on-overview .grow{transform:scaleX(1)}
+.fragment.visible .grow, .reveal section.present .grow.now, .reveal.overview .grow{transform:scaleX(1)}
 
-/* ---------- Fallback ---------- */
-.fallback-message{display:none;font-size:28px;padding:24px;background:#fff;text-align:center}
-.impress-not-supported .fallback-message{display:block}
-.impress-not-supported .step{position:relative;opacity:1;margin:24px auto}
-.impress-enabled .fallback-message{display:none}
 
-/* ---------- Overview-Ebene ---------- */
-.region-label{position:absolute;left:0;top:0;font-weight:800;font-size:250px;letter-spacing:.12em;color:var(--mid);
-  white-space:nowrap;opacity:0;transition:opacity 1s;pointer-events:none}
-.impress-on-overview .region-label{opacity:.55}
-#route{position:absolute;left:0;top:0;overflow:visible;opacity:0;transition:opacity 1s;pointer-events:none}
-.impress-on-overview #route{opacity:1}
 
 /* ---------- Step 1 ---------- */
 #s1 .hero{position:absolute;left:96px;top:260px;width:1300px;font-size:104px;line-height:1.08;font-weight:800;letter-spacing:-.01em}
@@ -82,8 +69,8 @@ b,strong{font-weight:800}
 /* ---------- Gears ---------- */
 .gearsvg{width:100%;height:100%;overflow:visible}
 .gearsvg .g{transform-box:fill-box;transform-origin:center}
-.step.present .gearsvg .cw{animation:spin 16s linear infinite}
-.step.present .gearsvg .ccw{animation:spin 16s linear infinite reverse}
+.reveal section.present .gearsvg .cw{animation:spin 16s linear infinite}
+.reveal section.present .gearsvg .ccw{animation:spin 16s linear infinite reverse}
 .gearsvg text{font-family:var(--font);font-weight:800;font-size:30px;letter-spacing:.06em;text-anchor:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
 
@@ -124,8 +111,6 @@ b,strong{font-weight:800}
 .figwrap img{display:block;width:1600px;height:616px;border-radius:8px}
 .figwrap .ph{display:none;width:1600px;height:616px;border:4px dashed var(--lgray);align-items:center;justify-content:center;font-size:36px;color:var(--gray)}
 .figwrap.missing img{display:none}.figwrap.missing .ph{display:flex}
-.frame{position:absolute;left:52.5%;top:5.627%;width:8.1667%;height:68.83%;border:6px solid var(--orange);border-radius:10px;
-  box-shadow:0 0 0 6px rgba(224,122,31,.18);pointer-events:none}
 
 /* Interaktives Diagramm (js/chart-abb1.js); ohne Daten bleibt abb1.png sichtbar */
 .figwrap.chart-on img,.figwrap.chart-on .ph{display:none !important}
@@ -147,7 +132,6 @@ b,strong{font-weight:800}
 .chart.hl .ch-seg{opacity:.18}
 .chart.hl .ch-seg.on{opacity:1}
 .ch-xlab{position:absolute;top:508px;text-align:center;font-size:24px;font-weight:600}
-.ch-xlab.de{color:var(--orange);font-weight:800}
 .ch-legend{position:absolute;left:0;right:0;top:562px;display:grid;grid-template-columns:repeat(5,auto);justify-content:space-between;gap:6px 24px}
 .ch-leg{justify-self:start;display:flex;align-items:center;gap:10px;padding:4px 8px;border:0;border-radius:8px;background:none;font:inherit;font-size:21px;
   color:var(--navy);cursor:pointer;text-align:left;white-space:nowrap;transition:opacity .25s,background .25s}
@@ -169,7 +153,13 @@ b,strong{font-weight:800}
 .ch-switch[aria-checked="true"]{color:var(--navy)}
 .ch-switch[aria-checked="true"] i{background:var(--navy)}
 .ch-switch[aria-checked="true"] i::after{transform:translateX(24px)}
-#fig5 .frame{z-index:3}
+/* Klick-Schritt "Fokus Deutschland": DE leuchtet, Rest tritt zurück (unsichtbares Fragment als Auslöser) */
+.focus-de{display:none}
+.ch-col,.ch-xlab{transition:opacity .8s ease,filter .8s ease,color .8s ease,box-shadow .8s ease}
+#fig5:has(.focus-de.visible) .ch-col:not(.de),
+#fig5:has(.focus-de.visible) .ch-xlab:not(.de){opacity:.55;filter:grayscale(.75)}
+#fig5:has(.focus-de.visible) .ch-col.de{z-index:2;box-shadow:0 0 0 6px var(--orange),0 0 24px 10px rgba(224,122,31,.6),0 0 60px 18px rgba(224,122,31,.3)}
+#fig5:has(.focus-de.visible) .ch-xlab.de{color:var(--orange)}
 
 /* ---------- Step 6 ---------- */
 .cols{position:absolute;left:96px;top:190px;width:1728px;display:flex;gap:48px}
@@ -208,7 +198,7 @@ b,strong{font-weight:800}
   display:flex;align-items:center;justify-content:center;text-align:center;padding:0 22px;line-height:1.15}
 .farr{width:150px;height:60px;flex:none}
 .farr line{stroke:var(--navy);stroke-width:5;stroke-dasharray:14 12;stroke-linecap:round}
-.step.present .farr line{animation:dash 1s linear infinite}
+.reveal section.present .farr line{animation:dash 1s linear infinite}
 @keyframes dash{to{stroke-dashoffset:-26}}
 .fres{margin-top:18px;font-size:42px;font-weight:800}
 
@@ -260,25 +250,17 @@ b,strong{font-weight:800}
 #s13 .refs p{margin:0 0 22px;break-inside:avoid}
 #s13 .refs b{display:block;font-size:22px;letter-spacing:.14em;color:var(--gray);margin-bottom:6px}
 
-/* ---------- Sprechernotizen (nur in der Referentenansicht, Taste P) ---------- */
+/* ---------- Sprechernotizen (nur in der Referentenansicht, Taste S) ---------- */
 .notes{display:none}
 
-/* ---------- Druck / PDF: eine Folie pro Seite ---------- */
-@page{size:1920px 1080px;margin:0}
-@media print{
-  html,body{height:auto;overflow:visible;background:#fff !important;background-image:none !important}
-  *{transition:none !important;animation:none !important}
-  #impress,#impress>div{position:static !important;transform:none !important;width:auto !important;height:auto !important;
-    perspective:none !important}
-  .step{position:relative !important;transform:none !important;opacity:1 !important;left:auto !important;top:auto !important;
-    margin:0 !important;border-radius:0;box-shadow:none;break-after:page;page-break-after:always;
-    -webkit-print-color-adjust:exact;print-color-adjust:exact}
-  #overview,.region-label,#route,.fallback-message,.notes{display:none !important}
-  .ch-ctl,.ch-reset,.ch-tip,.ch-switch{display:none !important}
-  .chart.hl .ch-seg,.chart.hl .ch-leg{opacity:1 !important}
-  .substep{opacity:1 !important;transform:none !important}
-  .bar{width:var(--w) !important}
-  .pillar{height:var(--h) !important}
-  .grow{transform:scaleX(1) !important}
-  h1::after{transform:scaleX(1) !important}
-}
+/* ---------- Druck / PDF (index.html?print-pdf): eine Folie pro Seite, alle Klick-Schritte sichtbar ---------- */
+html.reveal-print body,html.reveal-print .reveal-viewport{background:#fff;background-image:none}
+html.reveal-print .reveal .slides section{height:1080px !important;border-radius:0;box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+/* Weichgezeichnete Schatten druckt Chrome als Blöcke: im PDF nur der Rand */
+html.reveal-print #fig5 .ch-col.de{box-shadow:0 0 0 6px var(--orange) !important}
+html.reveal-print *{transition:none !important;animation:none !important}
+html.reveal-print .ch-ctl,html.reveal-print .ch-reset,html.reveal-print .ch-tip,html.reveal-print .ch-switch{display:none !important}
+html.reveal-print .bar{width:var(--w)}
+html.reveal-print .pillar{height:var(--h)}
+html.reveal-print .grow{transform:scaleX(1)}
+html.reveal-print h1::after{transform:scaleX(1)}

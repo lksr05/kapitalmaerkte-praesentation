@@ -1,14 +1,33 @@
 # Kapitalmärkte stärken
 
-impress.js-Präsentation (10 Min.) zu Kogler, Malmendier, Nöh & Schaffranka (2024), Wirtschaftsdienst 104(8), 539–542.
+[reveal.js](https://revealjs.com)-Präsentation (10 Min.) zu Kogler, Malmendier, Nöh & Schaffranka (2024), Wirtschaftsdienst 104(8), 539–542.
 
-Öffnen: `index.html` im Browser – funktioniert komplett offline (impress.js 2.0.0 liegt lokal unter `js/`). Vollbild mit **F**.
+Öffnen: `index.html` direkt im Browser – funktioniert komplett offline, ohne Server und ohne Build (reveal.js 6 liegt lokal unter `vendor/reveal/`).
 
-Tasten: **→/Leertaste** weiter · **F** Vollbild · **P** Referentenansicht (eigenes Fenster mit Notizen, nächster Folie und Uhr).
+Entwickeln (optional, Node ≥ 20, Yarn 4 via Corepack):
 
-PDF / Ausdruck: im Browser (am besten Chrome) „Drucken → Als PDF sichern“ – eine Folie pro Seite, alle Animationsschritte sichtbar.
+```
+yarn install       # einmalig
+yarn start         # Dev-Server mit Live-Reload, öffnet den Browser
+yarn vendor        # nach einem Update von reveal.js: Dateien nach vendor/reveal/ kopieren
+```
 
-Struktur: `css/style.css` (Styles), `js/main.js` (Zahnräder, Seitenzahlen, Animationen), `js/impress.js` (Bibliothek), `fonts/` (Inter, SIL Open Font License). Sprechernotizen stehen als `<div class="notes">` in jeder Folie.
+Tasten: **→/Leertaste** weiter · **←** zurück · **F** Vollbild · **S** Referentenansicht (eigenes Fenster mit Notizen, nächster Folie und Uhr) · **Esc** Übersicht · **B** Bildschirm schwarz.
+
+## Sprechernotizen
+
+- **Referentenansicht:** Taste **S** öffnet ein zweites Fenster mit aktueller und nächster Folie (inkl. Klick-Schritten), den Notizen der Folie sowie Uhrzeit und Timer. Beide Fenster bleiben synchron, weiterklicken geht in beiden.
+- **Nichts passiert?** Der Browser hat das Pop-up blockiert: Pop-ups für die Seite erlauben (Chrome: Symbol rechts in der Adressleiste) und **S** erneut drücken. Funktioniert auch bei `file://`.
+- **Am Beamer:** Bildschirme erweitern statt spiegeln (macOS: Systemeinstellungen → Displays), Präsentationsfenster auf den Beamer ziehen und mit **F** auf Vollbild schalten; das Notizenfenster bleibt auf dem Laptop.
+- **Ohne zweites Fenster:** `index.html?showNotes=true` zeigt die Notizen unter den Folien. `index.html?print-pdf&showNotes=true` druckt sie unter jede Folie, gut als Ausdruck zum Üben.
+
+## PDF / Ausdruck
+
+`index.html?print-pdf` öffnen, kurz warten, dann in Chrome „Drucken → Als PDF sichern“ (Ränder: keine, Hintergrundgrafiken: an). Eine Folie pro Seite im Endzustand, ohne Bedienelemente.
+
+## Struktur
+
+`css/style.css` (Styles), `js/main.js` (reveal.js-Konfiguration, Zahnräder, Seitenzahlen, Hochzählen), `vendor/reveal/` (reveal.js + Notizen-Plugin), `fonts/` (Inter, SIL Open Font License). Klick-Schritte sind reveal.js-Fragments (`class="fragment fade-up"`), Sprechernotizen stehen als `<aside class="notes">` in jeder Folie.
 
 ## Folie 5: interaktives Diagramm
 
@@ -17,10 +36,9 @@ Folie 5 zeichnet Abbildung 1 des Artikels aus den EIOPA-Rohdaten nach ([Insuranc
 Die Daten liegen offline in `js/abb1-data.js`. Aktualisieren:
 
 ```
-pip install openpyxl
-python3 scripts/eiopa_abb1.py      # lädt SQ_Exposure.xlsx (~70 MB) von EIOPA
+yarn data          # lädt SQ_Exposure.xlsx (~70 MB) von EIOPA und schreibt js/abb1-data.js
 ```
 
-Die Zuordnung der CIC-Kategorien zu den zehn Kategorien der Abbildung steht im Skript. Sie ist rekonstruiert und trifft die Originalabbildung auf etwa ±1 Prozentpunkt (EIOPA korrigiert ältere Quartale gelegentlich nachträglich).
+Die Zuordnung der CIC-Kategorien zu den zehn Kategorien der Abbildung steht in `scripts/eiopa-abb1.mjs`. Sie ist rekonstruiert und trifft die Originalabbildung auf etwa ±1 Prozentpunkt (EIOPA korrigiert ältere Quartale gelegentlich nachträglich).
 
 `abb1.png` ist die Originalabbildung aus dem Artikel; sie wird nur angezeigt, falls die Diagrammdaten fehlen.
